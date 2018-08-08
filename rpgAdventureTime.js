@@ -2,8 +2,10 @@ var Pessoa = function(nome, idade, raca){
 
 	this.nome = nome;
 	this.idade = idade;
-	this.level = 0;
+	this.level = 1;
 	this.raca = criaRaca(raca);
+	this.xp = 0;
+	this.inventario = new Inventario();
 	this.addLife = function(valor){
 		this.raca.addLife(valor);
 	}
@@ -15,6 +17,23 @@ var Pessoa = function(nome, idade, raca){
 	}
 	this.addInt = function(valor){
 		this.raca.addInt(valor);
+	}
+	this.computaXp = function(xpGanho){
+
+		this.xp += xpGanho;
+
+		if (this.xp >= this.raca.mediador){
+
+			this.level += 1
+			this.xp -= this.raca.mediador
+			this.raca.addMediador();
+
+			this.computaXp(0);
+		}
+	}
+	this.addItem = function(nome, item){
+
+		this.inventario[nome] = item;
 	}
 }
 
@@ -34,7 +53,7 @@ var criaRaca = function(raca){
 
 			return new Doce();
 
-		case "Vampiro":
+		case "vampiro":
 
 			return new Vampiro();
 
@@ -45,12 +64,16 @@ var criaRaca = function(raca){
 
 }
 
+var Inventario = function(){}
+
+
 var Raca = function(){
 
 	this.addStr = function(valor){ this.forca += valor};
 	this.addDex = function(valor){ this.dextreza += valor};
 	this.addInt = function(valor){ this.inteligencia += valor};
 	this.addLife = function(valor){ this.hp += valor};
+	this.addMediador = function(){this.mediador += (this.mediador * 1/3)}
 }
 
 var Humano = function(){
@@ -61,6 +84,7 @@ var Humano = function(){
 	this.dextreza = 11;
 	this.inteligencia = 7;
 	this.hp = 110;
+	this.mediador = 6;
 }
 Humano.prototype = new Raca();
 Humano.prototype.constructor = Humano; 
@@ -73,6 +97,7 @@ var Dog = function(){
 	this.dextreza = 15;
 	this.inteligencia = 6;
 	this.hp = 90;
+	this.mediador = 9;
 }
 Dog.prototype = new Raca();
 Dog.prototype.constructor = Dog; 
@@ -85,11 +110,12 @@ var Doce = function(){
 	this.dextreza = 8;
 	this.inteligencia = 15;
 	this.hp = 125;
+	this.mediador = 9;
 }
 Doce.prototype = new Raca()
 Doce.prototype.constructor = Doce;
 
-var Vampiro - function(){
+var Vampiro = function(){
 
 	Raca.call(this);
 
@@ -97,14 +123,26 @@ var Vampiro - function(){
 	this.dextreza = 12;
 	this.inteligencia = 11;
 	this.hp = 145;
+	this.mediador = 12;
 }
 Vampiro.prototype = new Raca()
 Vampiro.prototype.constructor = Vampiro;
 
 var finn = new Pessoa("Finn", 16, "humano");
 var jake = new Pessoa("jake", 39, "dog" );
-var bonibbel = new Pessoa("Bonibbel", 1000, "doce");
+var boni = new Pessoa("Bonibbel", 1000, "doce");
 var marcy = new Pessoa("Marceline", 1000, "vampiro");
 
-console.log(finn.raca instanceof Raca); // true 
-console.log(finn.raca instanceof Humano); // true
+finn.addItem("espada", {});
+/*
+finn.computaXp(20);
+jake.computaXp(20);
+boni.computaXp(20);
+marcy.computaXp(20);
+*/
+console.log(finn);
+console.log(finn.inventario.espada)
+/*
+console.log(jake);
+console.log(boni);
+console.log(marcy); */
