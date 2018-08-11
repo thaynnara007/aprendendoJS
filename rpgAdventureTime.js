@@ -5,7 +5,7 @@ var Pessoa = function(nome, idade, raca){
 	this.level = 1;
 	this.raca = criaRaca(raca);
 	this.xp = 0;
-	this.inventario = new Inventario();
+	this.inventario = new Inventario(100);
 	this.addLife = function(valor){
 		this.raca.addLife(valor);
 	}
@@ -31,9 +31,22 @@ var Pessoa = function(nome, idade, raca){
 			this.computaXp(0);
 		}
 	}
-	this.addItem = function(nome, item){
+	this.addItem = function(item){
 
-		this.inventario[nome] = item;
+		if (this.inventario.pesoMaximo >= item.peso){
+
+			this.inventario[item.nome] = item;
+			this.inventario.peso -= item.peso;
+		}
+		else{
+
+			console.log("espaco insuficiente");
+		}
+
+	}
+	this.getItem = function(nome){
+
+		return this.inventario[nome];
 	}
 }
 
@@ -63,8 +76,43 @@ var criaRaca = function(raca){
 	}
 
 }
+var Item = function(nome){
 
-var Inventario = function(){}
+	this.nome = nome;
+
+}
+
+var Inventario = function(peso){
+
+	this.pesoMaximo = peso;
+}
+var ArmaBranca = function(nome){
+
+	Item.call(this, nome);
+
+	this.calculaDano = function(distancia){
+
+		return (this.dano * this.alcance)/distancia
+	}
+}
+
+var Espada = function(nome){
+
+	ArmaBranca.call(this,nome);
+	this.peso = 7;
+	this.dano = 30;
+	this.alcance = 12;
+
+}
+
+var Machado = function(nome){
+
+	ArmaBranca.call(this, nome);
+
+	this.peso = 13;
+	this.dano = 40
+	this.alcance = 8;
+}
 
 
 var Raca = function(){
@@ -74,8 +122,8 @@ var Raca = function(){
 	this.addInt = function(valor){ this.inteligencia += valor};
 	this.addLife = function(valor){ this.hp += valor};
 	this.addMediador = function(){this.mediador += (this.mediador * 1/3)}
-}
 
+}
 var Humano = function(){
 
 	Raca.call(this);
@@ -133,16 +181,23 @@ var jake = new Pessoa("jake", 39, "dog" );
 var boni = new Pessoa("Bonibbel", 1000, "doce");
 var marcy = new Pessoa("Marceline", 1000, "vampiro");
 
-finn.addItem("espada", {});
-/*
-finn.computaXp(20);
+finn.addItem(new Espada("espada grande"));
+marcy.addItem(new Machado("baixo da familia"));
+var espada = finn.getItem("espada grande");
+console.log(finn);
+console.log(espada);
+console.log(espada.calculaDano(20));
+
+console.log(marcy.getItem("baixo da familia").calculaDano(20));
+
+/*finn.computaXp(20);
 jake.computaXp(20);
 boni.computaXp(20);
 marcy.computaXp(20);
-*/
+
 console.log(finn);
 console.log(finn.inventario.espada)
-/*
+
 console.log(jake);
 console.log(boni);
-console.log(marcy); */
+console.log(marcy);  */
