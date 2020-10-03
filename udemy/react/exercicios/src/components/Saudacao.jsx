@@ -1,10 +1,27 @@
 import React, { Fragment, Component } from 'react'
+import GoodMorning from './GoodMorning'
+
+function childrenWithProps (props) {
+    return (
+        React.Children.map( props.children, child => {
+            return React.cloneElement( child, {
+                ...props, ...child.props
+                })
+            })
+    )
+}
 
 export default class Saudacao extends Component {
 
-    state = {
-        type: this.props.type,
-        name: this.props.name
+    constructor(props){
+        super(props)
+
+        this.state = {
+            type: this.props.type,
+            name: this.props.name
+        }
+
+        this.setType = this.setType.bind(this)
     }
 
     setType(event) {
@@ -24,17 +41,19 @@ export default class Saudacao extends Component {
 
         return (
             <Fragment>
-                <h1>{type} {name}</h1>
+                <ul>
+                    { childrenWithProps( this.props ) }
+                </ul>
+                <GoodMorning {...this.state} time="10" ></GoodMorning> {/** passa todos os atributos de props do pai para o filho*/}
                 <hr></hr>
                 <input 
                     type = "text" placeholder = "Type..." value = {type} 
-                    onChange = { ( event ) => this.setType(event) }>
+                    onChange = {this.setType}>
                 </input>
                 <input 
                     type = "text" placeholder = "Name..." value = {name} 
-                    onChange = { ( event ) => this.setName(event) }>        
+                    onChange = { ( event ) => this.setName(event) }>    
                 </input>
-
             </Fragment>
         )
     }
